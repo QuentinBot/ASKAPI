@@ -39,5 +39,21 @@ def synthesize():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+@app.route('/api/synthesizeOnly', methods=['GET'])
+def synthesizeOnly():
+    query = request.args.get("query")
+    items = request.args.getlist("item_ids")
+    print(items)
+
+    if not query or not items:
+        return jsonify({"error": "Query and ItemIds are required"}), 400
+    try:
+        synthesis_result = synth_abstracs(query, items)
+        return jsonify(synthesis_result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 if __name__ == "__main__":
     app.run(debug=True)
