@@ -1,0 +1,225 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "🥥 ORKG-Ask API",
+    "version": "1.8.1"
+  },
+  "servers": [
+    {
+      "url": "https://api.ask.orkg.org"
+    }
+  ],
+  "paths": {
+    "/llm/synthesize/items/abstracts": {
+      "get": {
+        "tags": [
+          "Large Language Models"
+        ],
+        "summary": "Synthesize Abstracts For Question",
+        "description": "Synthesizes a citable answer for a given research question from the abstracts of the given items.",
+        "operationId": "synthesize_abstracts_for_question_llm_synthesize_items_abstracts_get",
+        "parameters": [
+          {
+            "name": "question",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The question to synthesize the abstracts for",
+              "title": "Question"
+            },
+            "description": "The question to synthesize the abstracts for"
+          },
+          {
+            "name": "item_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "The item ID to use during synthesis",
+              "title": "Item Ids"
+            },
+            "description": "The item ID to use during synthesis"
+          },
+          {
+            "name": "collection_item_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "The custom collection item IDs to use during synthesis",
+              "title": "Collection Item Ids"
+            },
+            "description": "The custom collection item IDs to use during synthesis"
+          },
+          {
+            "name": "invalidate_cache",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Whether to invalidate the cache for the item",
+              "default": false,
+              "title": "Invalidate Cache"
+            },
+            "description": "Whether to invalidate the cache for the item"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynthesisAnswerOfQuestionFromAbstractsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "SynthesisAnswerOfQuestionFromAbstractsResponse": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Uuid"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/app__models__llm__SynthesisAnswerOfQuestionFromAbstractsResponse__Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid",
+          "timestamp",
+          "payload"
+        ],
+        "title": "SynthesisAnswerOfQuestionFromAbstractsResponse"
+      },
+      "app__models__llm__SynthesisAnswerOfQuestionFromAbstractsResponse__Payload": {
+        "properties": {
+          "items_mapping": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Items Mapping",
+            "description": "The item IDs mappings to the citations"
+          },
+          "collection_items_mapping": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Collection Items Mapping",
+            "description": "The collection item IDs mappings to the citations"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question",
+            "description": "The question to synthesize the answer for"
+          },
+          "synthesis": {
+            "type": "string",
+            "title": "Synthesis",
+            "description": "The synthesized answer for the question"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items_mapping",
+          "collection_items_mapping",
+          "question",
+          "synthesis"
+        ],
+        "title": "Payload"
+      }
+    }
+  }
+}
